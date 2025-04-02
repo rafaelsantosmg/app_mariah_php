@@ -79,23 +79,39 @@ class ProductController
 
   public function update(Request $request, $id)
   {
-    $validator = Validator::make($request->all(), [
-      'costPrice' => 'sometimes|numeric|min:0',
-      'name' => 'sometimes|string',
-      'salePrice' => 'sometimes|numeric|min:0',
-      'stock' => 'sometimes|integer|min:0',
-      'stockType' => 'sometimes|string',
-    ]);
+    try {
+      $validator = Validator::make($request->all(), [
+        'costPrice' => 'sometimes|numeric|min:0',
+        'name' => 'sometimes|string',
+        'salePrice' => 'sometimes|numeric|min:0',
+        'stock' => 'sometimes|integer|min:0',
+        'stockType' => 'sometimes|string',
+      ]);
 
-    if ($validator->fails()) {
-      return $this->error('Unprocessable Entity', HttpStatus::UNPROCESSABLE_ENTITY, $validator->errors());
+      if ($validator->fails()) {
+        return $this->error('Unprocessable Entity', HttpStatus::UNPROCESSABLE_ENTITY, $validator->errors());
+      }
+
+      $product = $this->productService->updateProduct($id, $request->all());
+
+      if (!$product) {
+        return $this->error('Failed to update product', HttpStatus::BAD_REQUEST);
+      }
+
+      return $this->response('Product updated', HttpStatus::OK, $product);
+    } catch (\App\Exceptions\ErrorHandler $e) {
+      return response()->json($e->getMessage(), $e->getCode());
     }
-
-    return $this->productService->updateProduct($id, $request->all());
   }
 
   public function destroy($id)
   {
-    return $this->productService->getProductById($id);
+    try {
+      $this->productService->deleteProduct($id);
+
+      return $this->response('Product deleted', HttpStatus::NO_CONTENT);
+    } catch (\App\Exceptions\ErrorHandler $e) {
+      return response()->json($e->getMessage(), $e->getCode());
+    }
   }
 }

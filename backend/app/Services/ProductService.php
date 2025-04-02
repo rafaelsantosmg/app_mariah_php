@@ -88,7 +88,7 @@ class ProductService
     $product = $this->productRepository->getById($id);
 
     if (!$product) {
-      return $this->error('Product not found', HttpStatus::NOT_FOUND);
+      throw new \App\Exceptions\ErrorHandler('Product not found', HttpStatus::NOT_FOUND);
     }
 
     $updateProduct = [
@@ -113,13 +113,11 @@ class ProductService
     $product = $this->productRepository->getById($id);
 
     if (!$product) {
-      return $this->error('Product not found', HttpStatus::NOT_FOUND);
+      throw new \App\Exceptions\ErrorHandler('Product not found', HttpStatus::NOT_FOUND);
     }
 
     if (!$this->productRepository->delete($product)) {
-      return $this->error('Failed to delete product', HttpStatus::INTERNAL_SERVER_ERROR);
+      throw new \App\Exceptions\ErrorHandler('Failed to delete product', HttpStatus::INTERNAL_SERVER_ERROR);
     }
-
-    return $this->response('NO CONTENT', HttpStatus::NO_CONTENT);
   }
 }
