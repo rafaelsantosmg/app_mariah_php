@@ -14,3 +14,11 @@ Route::post('/products', [ProductController::class, 'store']);
 Route::patch('/products/{id}', [ProductController::class, 'update']);
 
 Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+// Sales routes
+
+Route::get('/sales', [SaleController::class, 'index']);
+
+Route::get('/sales/{id}', [SaleController::class, 'show']);
+
+Route::post('/sales', [SaleController::class, 'store']);

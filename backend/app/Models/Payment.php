@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = [
-        'method',
-        'installment',
-        'sale_id',
-    ];
+  protected $fillable = [
+    'method',
+    'installment',
+    'sale_id',
+  ];
 
-    public function sales()
-    {
-        return $this->belongsTo(Sale::class, 'sales_id');
-    }
+  public function sales()
+  {
+    return $this->belongsTo(Sale::class, 'sales_id');
+  }
 }

@@ -7,21 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class SalesProduct extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = [
-        'sale_id',
-        'product_id',
-        'quantity',
-    ];
+  protected $fillable = [
+    'sale_id',
+    'product_id',
+    'quantity',
+  ];
 
-    public function sale()
-    {
-        return $this->belongsTo(Sale::class, 'sale_id');
-    }
+  public function sale()
+  {
+    return $this->belongsTo(Sale::class, 'sale_id');
+  }
 
-    public function product()
-    {
-        return $this->belongsTo(Product::class, 'product_id');
-    }
+  public function product()
+  {
+    return $this->belongsTo(Product::class, 'product_id');
+  }
 }
