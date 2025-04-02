@@ -32,12 +32,12 @@ class ProductController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code'      => 'required|string|unique:products,code',
-            'name'      => 'required|string',
-            'costPrice' => 'required|numeric|min:0',
-            'salePrice' => 'required|numeric|min:0',
-            'stock'     => 'required|integer|min:0',
-            'stockType' => 'required|string',
+            'code'        => 'required|string|unique:products,code',
+            'costPrice'   => 'required|numeric|min:0',
+            'name'        => 'required|string',
+            'salePrice'   => 'required|numeric|min:0',
+            'stock'       => 'required|integer|min:0',
+            'stockType'   => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -50,15 +50,11 @@ class ProductController
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name'         => 'sometimes|string',
-            'costPrice'    => 'sometimes|numeric|min:0',
-            'salePrice'    => 'sometimes|numeric|min:0',
-            'description'  => 'sometimes|string',
-            'profitMargin' => 'sometimes|numeric|min:0',
-            'image'        => 'sometimes|string',
-            'stock'        => 'sometimes|integer|min:0',
-            'stockType'    => 'sometimes|string',
-            'updatedAt'    => 'sometimes|date',
+            'costPrice'   => 'sometimes|numeric|min:0',
+            'name'        => 'sometimes|string',
+            'salePrice'   => 'sometimes|numeric|min:0',
+            'stock'       => 'sometimes|integer|min:0',
+            'stockType'   => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
