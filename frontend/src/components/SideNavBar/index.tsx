@@ -31,7 +31,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useContext, useState } from 'react'
-import DateTime from '../DateTime'
 import EntryProducts from '../EntryProduct'
 import ModalContent from '../ModalContent'
 import OpenCashier from '../OpenCashier'
@@ -214,7 +213,7 @@ export default function SideNavBar({ ...props }) {
               <Link href="/home">
                 <Image width={230} src={Logo} alt="Logo da Mariah da Roça" />
               </Link>
-              <DateTime />
+              {/* <DateTime /> */}
             </Box>
           </Grid>
         </Toolbar>

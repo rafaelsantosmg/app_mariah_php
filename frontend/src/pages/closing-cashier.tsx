@@ -4,12 +4,12 @@ import api from '@/services'
 import theme from '@/theme'
 import { formatedCurrency } from '@/utils/formate-values'
 import { Button, Grid, Typography } from '@mui/material'
+import { format } from 'date-fns'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import CashRegister from '../asset/images/cash-register.png'
-import { format } from 'date-fns'
 
 export default function ClosingCashier({ ...props }) {
   const router = useRouter()
@@ -21,7 +21,7 @@ export default function ClosingCashier({ ...props }) {
     async function getSalesByDate() {
       const today = format(new Date(), 'yyyy-MM-dd')
       const { data } = await api.get(`/sales/by-date/${today}`)
-      const salesData = data.map((sale: any) => ({
+      const salesData = data.data.map((sale: any) => ({
         ...sale,
         paymentMethod: sale.Payments[0].method,
       }))

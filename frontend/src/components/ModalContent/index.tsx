@@ -2,7 +2,6 @@
 import { Box, Modal } from '@mui/material'
 import Image from 'next/image'
 import Logo from '../../asset/images/logo.svg'
-import DateTime from '../DateTime'
 
 export default function ModalContent({ ...props }) {
   const { children, open = false, renderButtons } = props
@@ -64,7 +63,7 @@ export default function ModalContent({ ...props }) {
               alignItems: 'center',
             }}
           >
-            <DateTime fulltime />
+            {/* <DateTime fulltime /> */}
           </Box>
         </Box>
 

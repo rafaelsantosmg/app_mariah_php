@@ -49,8 +49,8 @@ export default function AddProduct({ ...props }): JSX.Element {
         image: values.image,
       }
       const { data } = await api.post('/products', request)
-      setProducts([...products, data])
-      toast.success(`Produto ${data.name} cadastrado com sucesso!`)
+      setProducts([...products, data.data])
+      toast.success(`Produto ${data.data.name} cadastrado com sucesso!`)
     } catch (error) {
       toast.error('Erro ao cadastrar produto \n' + error)
     } finally {

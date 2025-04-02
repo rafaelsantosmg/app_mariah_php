@@ -100,7 +100,7 @@ export default function ProductsTable({ ...props }): JSX.Element {
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
 
   const listProducts = filterListProducts(
-    products,
+    products || [],
     form.values?.searchCode,
     form.values?.searchName
   )

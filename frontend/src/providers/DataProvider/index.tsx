@@ -40,7 +40,8 @@ export const DataProvider = ({ children }: TProviderProps) => {
     const getProductsApi = async () => {
       try {
         const { data } = await api.get('/products')
-        setProducts(data)
+
+        setProducts(data.data)
       } catch (error) {
         toast.error('Erro ao buscar produtos \n' + error)
       } finally {
@@ -91,7 +92,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
         const { data } = await api.post('/sales', request)
         toast.success(
           `Venda no valor de ${formatedCurrency(
-            data.totalPrice
+            data.data.totalPrice
           )} finalizada com sucesso`
         )
       } else {

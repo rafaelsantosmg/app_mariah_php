@@ -35,6 +35,9 @@ export function formateValueInputNumericPrice(value: string) {
   return inputQuantity
 }
 
-export function formatedCurrency(value: number): string {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+export function formatedCurrency(value: number | string): string {
+  return Number(value).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  })
 }

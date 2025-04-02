@@ -10,14 +10,13 @@ import {
 } from '@/utils/formate-values'
 import { Box, Button, Grid, Typography } from '@mui/material'
 import { useFormik } from 'formik'
-import { useRouter } from 'next/navigation'
 import { ChangeEvent, Fragment, useContext, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import * as Yup from 'yup'
 import SelectFields from '../Inputs/SelectFields'
 import TextFields from '../Inputs/TextFields'
 import ProductsTable from '../ProductsTable'
 import SearchBar from '../SearchBar'
-import { toast } from 'react-toastify'
 
 const style = {
   p: {
@@ -63,11 +62,11 @@ export default function EntryProducts({ ...props }): JSX.Element {
       }
       const newProducts = products
       const { data } = await api.patch(`/products/${values.id}`, request)
-      const index = products.findIndex((p) => p.code === data.code)
+      const index = products.findIndex((p) => p.code === data.data.code)
       if (index < 0) {
         throw new Error('Produto não encontrado')
       }
-      newProducts[index] = data
+      newProducts[index] = data.data
       setProducts([...newProducts])
       handleClose()
       toast.success('Produto registrado com sucesso')
@@ -148,7 +147,7 @@ export default function EntryProducts({ ...props }): JSX.Element {
     setFieldValue('name', product.name)
     setFieldValue('costPrice', product.costPrice)
     setFieldValue('salePrice', product.salePrice)
-    setFieldValue('stockType', product.stockType === 'UN' ? 'UNIDADE' : 'KG')
+    setFieldValue('stockType', product.stockType)
     setFieldValue('pastStock', product.stock)
   }
 

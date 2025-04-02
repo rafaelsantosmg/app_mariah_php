@@ -7,10 +7,7 @@ cd ../frontend
 yarn
 
 printf "\n> Rodando os containers\n"
-docker-compose up -d
-
-printf "\n> Aguardando a inicialização dos containers\n"
-sleep 5  # Dá um tempo para os containers subirem completamente
+docker-compose up -d --wait
 
 printf "\n> Rodando as migrations e seeders dentro do container\n"
 docker exec -it mariah_api php artisan migrate:fresh --seed
