@@ -4,34 +4,18 @@ namespace App\Services;
 
 use App\Interfaces\ProductInterface;
 use App\Helpers\HttpStatus;
+use App\Http\Resources\ProductResource;
+use App\Traits\HttpResponses;
 
 class ProductService
 {
+    use HttpResponses;
+
     protected $productRepository;
 
     public function __construct(ProductInterface $productRepository)
     {
         $this->productRepository = $productRepository;
-    }
-
-    public function getAllProducts()
-    {
-        return $this->productRepository->getAll();
-    }
-
-    public function getProductById($id)
-    {
-        try {
-            $product = $this->productRepository->getById($id);
-
-            if (!$product) {
-                throw new \App\Exceptions\ErrorHandler('Product not found', HttpStatus::NOT_FOUND);
-            }
-
-            return response()->json($product, HttpStatus::OK);
-        } catch (\App\Exceptions\ErrorHandler $e) {
-            return response()->json($e->getMessage(), $e->getCode());
-        }
     }
 
     private function searchProductsByCode($code)
@@ -45,13 +29,42 @@ class ProductService
         return $product;
     }
 
+    private function calcProfitMargin($data)
+    {
+        return $data['salePrice'] - $data['costPrice'];
+    }
+
+    public function getAllProducts()
+    {
+        $products = $this->productRepository->getAll();
+        $productsResources =  ProductResource::collection($products);
+        return $this->response('OK', HttpStatus::OK, $productsResources);
+    }
+
+    public function getProductById($id)
+    {
+        try {
+            $product = $this->productRepository->getById($id);
+
+            if (!$product) {
+                return $this->error('Product not found', HttpStatus::NOT_FOUND);
+            }
+
+            $productResource = new ProductResource($product);
+
+            return $this->response('OK', HttpStatus::OK, $productResource);
+        } catch (\App\Exceptions\ErrorHandler $e) {
+            return response()->json($e->getMessage(), $e->getCode());
+        }
+    }
+
     public function createProduct(array $data)
     {
         try {
             $product = $this->searchProductsByCode($data['code']);
 
             if ($product) {
-                throw new \App\Exceptions\ErrorHandler('product already exists', HttpStatus::BAD_REQUEST);
+                return $this->error('Product already exists', HttpStatus::BAD_REQUEST);
             }
 
             $newProduct = [
@@ -60,7 +73,7 @@ class ProductService
                 'description'   => $data['description'] ?? null,
                 'cost_price'    => $data['costPrice'],
                 'sale_price'    => $data['salePrice'],
-                'profit_margin' => $data['salePrice'] - $data['costPrice'],
+                'profit_margin' => $this->calcProfitMargin($data),
                 'image'         => $data['image'] ?? null,
                 'stock'         => $data['stock'],
                 'stock_type'    => $data['stockType'],
@@ -68,7 +81,15 @@ class ProductService
                 'updated_at'    => $data['updatedAt']?? now(),
             ];
 
-            return $this->productRepository->create($newProduct);
+            $createProduct = $this->productRepository->create($newProduct);
+
+            if (!$createProduct) {
+                return $this->error('Failed to create product', HttpStatus::BAD_REQUEST);
+            }
+
+            $createResource = new ProductResource($createProduct);
+
+            return $this->response('CREATED', HttpStatus::CREATED, $createResource);
         } catch (\App\Exceptions\ErrorHandler $e) {
             return response()->json($e->getMessage(), $e->getCode());
         }
@@ -80,7 +101,7 @@ class ProductService
             $product = $this->productRepository->getById($id);
 
             if (!$product) {
-                throw new \App\Exceptions\ErrorHandler('product not found', HttpStatus::NOT_FOUND);
+                return $this->error('Product not found', HttpStatus::NOT_FOUND);
             }
 
             $updateProduct = [
@@ -88,14 +109,22 @@ class ProductService
                 'description'   => $data['description'] ?? null,
                 'cost_price'    => $data['costPrice'],
                 'sale_price'    => $data['salePrice'],
-                'profit_margin' => $data['salePrice'] - $data['costPrice'],
+                'profit_margin' => $this->calcProfitMargin($data),
                 'image'         => $data['image'] ?? null,
                 'stock'         => $data['stock'],
                 'stock_type'    => $data['stockType'],
                 'updated_at'    => $data['updatedAt']?? now(),
             ];
 
-            return $this->productRepository->update($id, $updateProduct);
+            $updatedProduct = $this->productRepository->update($id, $updateProduct);
+
+            if (!$updatedProduct) {
+                return $this->error('Failed to update product', HttpStatus::BAD_REQUEST);
+            }
+
+            $updatedProductResource = new ProductResource($updatedProduct);
+
+            return $this->response('UPDATED', HttpStatus::OK, $updatedProductResource);
         } catch (\App\Exceptions\ErrorHandler $e) {
             return response()->json($e->getMessage(), $e->getCode());
         }
@@ -103,6 +132,21 @@ class ProductService
 
     public function deleteProduct($id)
     {
-        return $this->productRepository->delete($id);
+        try {
+            $product = $this->productRepository->getById($id);
+
+            if (!$product) {
+                return $this->error('Product not found', HttpStatus::NOT_FOUND);
+            }
+
+            if (!$this->productRepository->delete($product)) {
+                return $this->error('Failed to delete product', HttpStatus::INTERNAL_SERVER_ERROR);
+            }
+
+            return $this->response('NO CONTENT', HttpStatus::NO_CONTENT);
+
+        } catch (\App\Exceptions\ErrorHandler $e) {
+            return response()->json($e->getMessage(), $e->getCode());
+        }
     }
 }
