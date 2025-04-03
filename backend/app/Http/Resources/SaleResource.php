@@ -14,6 +14,13 @@ class SaleResource extends JsonResource
    */
   public function toArray(Request $request): array
   {
-    return parent::toArray($request);
+    return [
+      'id' => $this->id,
+      'discount' => $this->discount,
+      'totalPrice' => $this->total_price,
+      'salesPrice' => $this->sales_price,
+      'createdAt' => $this->created_at,
+      'updatedAt' => $this->updated_at,
+    ];
   }
 }
