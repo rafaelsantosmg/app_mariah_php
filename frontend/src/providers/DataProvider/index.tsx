@@ -2,7 +2,7 @@ import api from '@/services'
 import { formatedCurrency } from '@/utils/formate-values'
 import { useFormik } from 'formik'
 import Cookies from 'js-cookie'
-import { createContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import * as Yup from 'yup'
 import { Product, ProductSale } from '../../interfaces/Products'
@@ -40,60 +40,50 @@ export const DataProvider = ({ children }: TProviderProps) => {
   const [openModalSaleSpun, setOpenModalSaleSpun] = useState(false)
   const [openModalCashier, setOpenModalCashier] = useState(false)
   const [getProducts, setGetProducts] = useState<boolean>(false)
+  const [verifyToken, setVerifyToken] = useState<boolean>(false)
 
-  const token = useMemo(() => {
-    const token = Cookies.get('auth_token')
-    if (token) {
-      api.defaults.headers.common.Authorization = `Bearer ${token}`
+  const getToken = useCallback(async () => {
+    try {
+      const { data } = await api.post('/login', {
+        email: 'example@example.com',
+        password: 'password',
+      })
+
+      const token = data.data.token
+
+      if (token) {
+        Cookies.set('auth_token', token, {
+          expires: 1,
+          secure: true,
+          sameSite: 'Strict',
+        })
+        api.defaults.headers.common.Authorization = `Bearer ${token}`
+        setVerifyToken(true)
+      }
+    } catch (error) {
+      toast.error('Erro ao efetuar login!')
     }
-    return token
+  }, [])
+
+  const getProductsApi = useCallback(async () => {
+    try {
+      const { data } = await api.get('/products')
+
+      setProducts(data.data)
+    } catch (error) {
+      toast.error('Erro ao buscar produtos \n' + error)
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => {
-    const getToken = async () => {
-      try {
-        const { data } = await api.post('/login', {
-          email: 'example@example.com',
-          password: 'password',
-        })
-
-        const token = data.data.token
-
-        if (token) {
-          Cookies.set('auth_token', token, {
-            expires: 1,
-            secure: true,
-            sameSite: 'Strict',
-          })
-          api.defaults.headers.common.Authorization = `Bearer ${token}`
-        }
-      } catch (error) {
-        toast.error('Erro ao efetuar login!')
-      }
-    }
-
-    if (token === '') {
+    if (!verifyToken) {
       getToken()
-    }
-  }, [token])
-
-  useEffect(() => {
-    const getProductsApi = async () => {
-      try {
-        const { data } = await api.get('/products')
-
-        setProducts(data.data)
-      } catch (error) {
-        toast.error('Erro ao buscar produtos \n' + error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (token !== '') {
+    } else {
       getProductsApi()
     }
-  }, [getProducts, token])
+  }, [getProductsApi, getToken, verifyToken])
 
   const schema = Yup.object().shape({
     products: Yup.array()
