@@ -4,6 +4,7 @@ import { useFormik } from 'formik'
 import { createContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import * as Yup from 'yup'
+import Cookies from "js-cookie";
 import { Product, ProductSale } from '../../interfaces/Products'
 import { TDataContext, TProviderProps, TSaleProduct } from '../../types'
 
@@ -35,6 +36,31 @@ export const DataProvider = ({ children }: TProviderProps) => {
   const [openModalSaleSpun, setOpenModalSaleSpun] = useState(false)
   const [openModalCashier, setOpenModalCashier] = useState(false)
   const [getProducts, setGetProducts] = useState<boolean>(false)
+  const [token, setToken] = useState(false)
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const { data } = await api.post("/login", {
+          email: "example@example.com",
+          password: "password",
+        });
+
+        const token = data.data.token;
+
+        if (token) {
+          Cookies.set("auth_token", token, { expires: 1, secure: true, sameSite: "Strict" });
+          setToken(true);
+        }
+      } catch (error) {
+        toast.error('Erro ao efetuar login!');
+      }
+    };
+
+    if (!token) {
+      getToken();
+    }
+  }, []);
 
   useEffect(() => {
     const getProductsApi = async () => {
@@ -48,8 +74,11 @@ export const DataProvider = ({ children }: TProviderProps) => {
         setLoading(false)
       }
     }
-    getProductsApi()
-  }, [getProducts])
+
+    if (token) {
+      getProductsApi()
+    }
+  }, [getProducts, token])
 
   const schema = Yup.object().shape({
     products: Yup.array()
