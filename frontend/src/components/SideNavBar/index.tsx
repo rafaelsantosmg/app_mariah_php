@@ -161,12 +161,12 @@ export default function SideNavBar({ ...props }) {
       handleClick: () => setOpenModalCashier(true),
       icon: <RequestQuoteTwoTone />,
     },
-    {
-      id: 7,
-      title: 'Fechamento de Caixa',
-      handleClick: () => router.push('/closing-cashier'),
-      icon: <SavingsTwoTone />,
-    },
+    // {
+    //   id: 7,
+    //   title: 'Fechamento de Caixa',
+    //   handleClick: () => router.push('/closing-cashier'),
+    //   icon: <SavingsTwoTone />,
+    // },
   ]
 
   const handleDrawerOpen = () => {
