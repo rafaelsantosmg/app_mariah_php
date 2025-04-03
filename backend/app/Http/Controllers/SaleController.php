@@ -67,6 +67,29 @@ class SaleController
     }
   }
 
+  public function storeSpun(Request $request)
+  {
+    try {
+      $validator = Validator::make($request->all(), [
+        'products' => 'required|array',
+        'products.*.productId' => 'required|integer|exists:products,id',
+        'products.*.productCode' => 'required|string|exists:products,code',
+        'products.*.quantity' => 'required|integer|min:1',
+        'products.*.stockType' => 'required|string',
+      ]);
+
+      if ($validator->fails()) {
+        return $this->error('Unprocessable Entity', HttpStatus::UNPROCESSABLE_ENTITY, $validator->errors());
+      }
+
+      $sale = $this->saleService->createSaleSpun($request->all());
+
+      return $this->response('Sale spun created', HttpStatus::CREATED, $sale);
+    } catch (\App\Exceptions\ErrorHandler $e) {
+      return response()->json($e->getMessage(), $e->getCode());
+    }
+  }
+
   public function destroy($id)
   {
     try {
