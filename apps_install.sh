@@ -8,7 +8,7 @@ cp .env.example .env
 yarn
 
 printf "\n> Rodando os containers\n"
-docker-compose up -d --wait
+docker-compose up -d --build
 
 printf "\n> instalando composer\n"
 docker exec mariah_api bash -c "composer install"
