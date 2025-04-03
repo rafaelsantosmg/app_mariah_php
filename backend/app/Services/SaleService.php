@@ -78,7 +78,8 @@ class SaleService
     }
   }
 
-  private function verifyProducts($data){
+  private function verifyProducts($data)
+  {
     $products = collect($data['products'])->map(function ($product) {
       $productExist = Product::find($product['productId']);
 
