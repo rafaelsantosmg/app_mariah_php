@@ -1,10 +1,10 @@
 import api from '@/services'
 import { formatedCurrency } from '@/utils/formate-values'
 import { useFormik } from 'formik'
-import { createContext, useEffect, useState } from 'react'
+import Cookies from 'js-cookie'
+import { createContext, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import * as Yup from 'yup'
-import Cookies from "js-cookie";
 import { Product, ProductSale } from '../../interfaces/Products'
 import { TDataContext, TProviderProps, TSaleProduct } from '../../types'
 
@@ -23,6 +23,10 @@ function serializePaymentMethods(paymentMethod: string): string {
   }
 }
 
+export const getAuthToken = () => {
+  return Cookies.get('auth_token')
+}
+
 export const DataContext = createContext<TDataContext>({} as TDataContext)
 
 export const DataProvider = ({ children }: TProviderProps) => {
@@ -36,34 +40,49 @@ export const DataProvider = ({ children }: TProviderProps) => {
   const [openModalSaleSpun, setOpenModalSaleSpun] = useState(false)
   const [openModalCashier, setOpenModalCashier] = useState(false)
   const [getProducts, setGetProducts] = useState<boolean>(false)
-  const [token, setToken] = useState(false)
+
+  const token = useMemo(() => {
+    const token = Cookies.get('auth_token')
+    if (token) {
+      api.defaults.headers.common.Authorization = `Bearer ${token}`
+    }
+    return token
+  }, [])
 
   useEffect(() => {
     const getToken = async () => {
       try {
-        const { data } = await api.post("/login", {
-          email: "example@example.com",
-          password: "password",
-        });
+        const { data } = await api.post('/login', {
+          email: 'example@example.com',
+          password: 'password',
+        })
 
-        const token = data.data.token;
+        const token = data.data.token
 
         if (token) {
-          Cookies.set("auth_token", token, { expires: 1, secure: true, sameSite: "Strict" });
-          setToken(true);
+          Cookies.set('auth_token', token, {
+            expires: 1,
+            secure: true,
+            sameSite: 'Strict',
+          })
+          api.defaults.headers.common.Authorization = `Bearer ${token}`
         }
       } catch (error) {
-        toast.error('Erro ao efetuar login!');
+        toast.error('Erro ao efetuar login!')
       }
-    };
-
-    if (!token) {
-      getToken();
     }
-  }, []);
+
+    if (token === '') {
+      getToken()
+    }
+  }, [token])
 
   useEffect(() => {
+    console.log('Token:', token)
+
     const getProductsApi = async () => {
+      console.log('token:', token)
+
       try {
         const { data } = await api.get('/products')
 
@@ -75,7 +94,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
       }
     }
 
-    if (token) {
+    if (token !== '') {
       getProductsApi()
     }
   }, [getProducts, token])
