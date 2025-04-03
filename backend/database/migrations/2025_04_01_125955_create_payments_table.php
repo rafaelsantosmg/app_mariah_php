@@ -12,7 +12,7 @@ return new class () extends Migration {
   {
     Schema::create('payments', function (Blueprint $table) {
       $table->id();
-      $table->timestamps(0);
+      $table->timestamps();
       $table->string('method')->nullable();
       $table->string('installment')->nullable();
       $table->foreignId('sale_id')->nullable()->constrained('sales')->onDelete('set null');

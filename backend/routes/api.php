@@ -1,29 +1,48 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DailyMovementController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 
-// Products routes
+// Login route
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/products', [ProductController::class, 'index']);
+// Authenticated routes with Sanctum middleware (token-based authentication)
+Route::middleware('auth:sanctum')->group(function () {
+  // Logout route
+  Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::get('/products/{id}', [ProductController::class, 'show']);
+  // Products routes
+  Route::get('/products', [ProductController::class, 'index']);
 
-Route::post('/products', [ProductController::class, 'store']);
+  Route::get('/products/{id}', [ProductController::class, 'show']);
 
-Route::patch('/products/{id}', [ProductController::class, 'update']);
+  Route::post('/products', [ProductController::class, 'store']);
 
-Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+  Route::patch('/products/{id}', [ProductController::class, 'update']);
 
-// Sales routes
+  Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
-Route::get('/sales', [SaleController::class, 'index']);
+  // Sales routes
+  Route::get('/sales', [SaleController::class, 'index']);
 
-Route::get('/sales/{id}', [SaleController::class, 'show']);
+  Route::get('/sales/{id}', [SaleController::class, 'show']);
 
-Route::post('/sales', [SaleController::class, 'store']);
+  Route::post('/sales', [SaleController::class, 'store']);
 
-Route::post('/sales-spun', [SaleController::class, 'storeSpun']);
+  Route::post('/sales-spun', [SaleController::class, 'storeSpun']);
 
-Route::delete('/sales/{id}', [SaleController::class, 'destroy']);
+  Route::delete('/sales/{id}', [SaleController::class, 'destroy']);
+
+
+  // Daily Movements routes
+  Route::get('/daily-movements', [DailyMovementController::class, 'index']);
+
+  Route::get('/daily-movements/{id}', [DailyMovementController::class, 'show']);
+
+  Route::get('/daily-movements/by-date/{date}', [DailyMovementController::class, 'showDate']);
+
+  Route::post('/daily-movements', [DailyMovementController::class, 'store']);
+});

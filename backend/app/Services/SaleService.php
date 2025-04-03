@@ -8,13 +8,10 @@ use App\Interfaces\SaleInterface;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\SalesProduct;
-use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\DB;
 
 class SaleService
 {
-  use HttpResponses;
-
   protected $saleRepository;
 
   public function __construct(SaleInterface $saleRepository)
@@ -105,12 +102,12 @@ class SaleService
       $productExist = Product::find($product['productId']);
 
       if (!$productExist) {
-        throw new \App\Exceptions\ErrorHandler("Produto com ID nº {$product['productCode']} não encontrado.", HttpStatus::NOT_FOUND);
+        throw new \App\Exceptions\ErrorHandler('Product not found', HttpStatus::NOT_FOUND);
       }
 
       $productStock = $productExist->stock - $product['quantity'];
       if ($productStock < 0) {
-        throw new \App\Exceptions\ErrorHandler("Produto com ID nº {$product['productCode']} sem estoque.", HttpStatus::BAD_REQUEST);
+        throw new \App\Exceptions\ErrorHandler('Product not found', HttpStatus::BAD_REQUEST);
       }
 
       $productPrice = $productExist->name === 'PRODUTOS FIADO'

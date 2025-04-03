@@ -19,7 +19,7 @@ return new class () extends Migration {
       $table->float('profit_margin');
       $table->string('image')->nullable();
       $table->integer('stock')->default(0);
-      $table->timestamps(0);
+      $table->timestamps();
       $table->enum('stock_type', ['KG', 'UN'])->default('UN');
       $table->string('code')->unique()->nullable();
     });

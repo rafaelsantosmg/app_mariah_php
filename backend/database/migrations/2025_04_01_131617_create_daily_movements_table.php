@@ -20,7 +20,7 @@ return new class () extends Migration {
       $table->float('debit_card_sales');
       $table->float('credit_card_sales_cash');
       $table->float('credit_card_sales_installment');
-      $table->timestamps(0);
+      $table->timestamps();
     });
   }
 

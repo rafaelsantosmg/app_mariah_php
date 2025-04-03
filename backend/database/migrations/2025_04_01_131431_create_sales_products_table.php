@@ -15,7 +15,7 @@ return new class () extends Migration {
       $table->foreignId('sale_id')->constrained('sales')->onDelete('cascade');
       $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
       $table->float('quantity');
-      $table->timestamps(0);
+      $table->timestamps();
     });
   }
 

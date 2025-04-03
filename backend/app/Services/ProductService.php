@@ -5,12 +5,9 @@ namespace App\Services;
 use App\Interfaces\ProductInterface;
 use App\Helpers\HttpStatus;
 use App\Http\Resources\ProductResource;
-use App\Traits\HttpResponses;
 
 class ProductService
 {
-  use HttpResponses;
-
   protected $productRepository;
 
   public function __construct(ProductInterface $productRepository)
@@ -57,7 +54,7 @@ class ProductService
     $product = $this->searchProductsByCode($data['code']);
 
     if ($product) {
-      return $this->error('Product already exists', HttpStatus::BAD_REQUEST);
+      throw new \App\Exceptions\ErrorHandler('Product already exists', HttpStatus::BAD_REQUEST);
     }
 
     $newProduct = [

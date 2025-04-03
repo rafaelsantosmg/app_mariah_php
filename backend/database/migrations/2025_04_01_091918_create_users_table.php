@@ -10,12 +10,14 @@ return new class () extends Migration {
    */
   public function up(): void
   {
-    Schema::create('sales', function (Blueprint $table) {
+    Schema::create('users', function (Blueprint $table) {
       $table->id();
+      $table->string('name');
+      $table->string('email')->unique();
+      $table->timestamp('email_verified_at')->nullable();
+      $table->string('password');
+      $table->rememberToken();
       $table->timestamps();
-      $table->float('discount');
-      $table->float('total_price');
-      $table->float('sales_price');
     });
   }
 
@@ -24,6 +26,6 @@ return new class () extends Migration {
    */
   public function down(): void
   {
-    Schema::dropIfExists('sales');
+    Schema::dropIfExists('users');
   }
 };
