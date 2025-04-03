@@ -38,7 +38,7 @@ class ProductService
   {
     $products = $this->productRepository->getAll();
 
-    return ProductResource::collection($products);
+    return ProductResource::collection($products->all());
   }
 
   public function getProductById($id)
