@@ -41,7 +41,7 @@ class SaleService
   {
     return DB::transaction(function () use ($data) {
       $products = $this->verifyProducts($data);
-
+      
       $totalPrice = $this->sumProducts($products);
 
       $salesPrice = $this->applyDiscount($data, $totalPrice);
@@ -160,7 +160,7 @@ class SaleService
     collect($products)->each(function ($product) use ($saleId) {
       SalesProduct::create([
         'sale_id' => $saleId,
-        'product_id' => $product['productId'],
+        'product_id' => $product['id'],
         'quantity' => $product['quantity'],
       ]);
     });
