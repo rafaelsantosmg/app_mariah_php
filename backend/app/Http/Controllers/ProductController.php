@@ -24,10 +24,6 @@ class ProductController
     try {
       $products = $this->productService->getAllProducts();
 
-      if (!$products) {
-        return $this->error('No products found', HttpStatus::NOT_FOUND);
-      }
-
       return $this->response('Products', HttpStatus::OK, $products);
     } catch (\App\Exceptions\ErrorHandler $e) {
       return response()->json($e->getMessage(), $e->getCode());
@@ -38,10 +34,6 @@ class ProductController
   {
     try {
       $product = $this->productService->getProductById($id);
-
-      if (!$product) {
-        return $this->error('Product not found', HttpStatus::NOT_FOUND);
-      }
 
       return $this->response('Product', HttpStatus::OK, $product);
     } catch (\App\Exceptions\ErrorHandler $e) {
@@ -67,10 +59,6 @@ class ProductController
 
       $product = $this->productService->createProduct($request->all());
 
-      if (!$product) {
-        return $this->error('Failed to create product', HttpStatus::BAD_REQUEST);
-      }
-
       return $this->response('Product created', HttpStatus::CREATED, $product);
     } catch (\App\Exceptions\ErrorHandler $e) {
       return response()->json($e->getMessage(), $e->getCode());
@@ -93,10 +81,6 @@ class ProductController
       }
 
       $product = $this->productService->updateProduct($id, $request->all());
-
-      if (!$product) {
-        return $this->error('Failed to update product', HttpStatus::BAD_REQUEST);
-      }
 
       return $this->response('Product updated', HttpStatus::OK, $product);
     } catch (\App\Exceptions\ErrorHandler $e) {

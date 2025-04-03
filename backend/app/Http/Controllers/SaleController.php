@@ -3,65 +3,76 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\HttpStatus;
-use App\Http\Resources\SaleResource;
-use App\Interfaces\SaleInterface;
+use App\Services\SaleService;
 use App\Traits\HttpResponses;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class SaleService
+class SaleController
 {
   use HttpResponses;
 
-  protected $saleRepository;
+  protected $saleService;
 
-  public function __construct(SaleInterface $saleRepository)
+  public function __construct(SaleService $saleService)
   {
-    $this->saleRepository = $saleRepository;
+    $this->saleService = $saleService;
   }
 
-  public function getAllSales()
-  {
-    $sales = $this->saleRepository->getAll();
-    $salesResources = SaleResource::collection($sales);
-
-    return $this->response('OK', HttpStatus::OK, $salesResources);
-  }
-
-  public function getSaleById($id)
+  public function index()
   {
     try {
-      $sale = $this->saleRepository->getById($id);
+      $sales = $this->saleService->getAllSales();
 
-      if (!$sale) {
-        return $this->error('Sale not found', HttpStatus::NOT_FOUND);
+      return $this->response('Sales', HttpStatus::OK, $sales);
+    } catch (\App\Exceptions\ErrorHandler $e) {
+      return response()->json($e->getMessage(), $e->getCode());
+    }
+  }
+
+  public function show($id)
+  {
+    try {
+      $sale = $this->saleService->getSaleById($id);
+
+      return $this->response('Sale', HttpStatus::OK, $sale);
+    } catch (\App\Exceptions\ErrorHandler $e) {
+      return response()->json($e->getMessage(), $e->getCode());
+    }
+  }
+
+  public function store(Request $request)
+  {
+    try {
+      $validator = Validator::make($request->all(), [
+        'discount' => 'sometimes|numeric|min:0',
+        'paymentInstallment' => 'sometimes|string',
+        'paymentMethod' => 'sometimes|string|nullable',
+        'products' => 'required|array',
+        'products.*.productId' => 'required|integer|exists:products,id',
+        'products.*.productCode' => 'required|string|exists:products,code',
+        'products.*.quantity' => 'required|integer|min:1',
+        'products.*.stockType' => 'required|string',
+      ]);
+
+      if ($validator->fails()) {
+        return $this->error('Unprocessable Entity', HttpStatus::UNPROCESSABLE_ENTITY, $validator->errors());
       }
 
-      $productResource = new SaleResource($sale);
+      $sale = $this->saleService->createSale($request->all());
 
-      return $this->response('OK', HttpStatus::OK, $productResource);
+      return $this->response('Sale created', HttpStatus::CREATED, $sale);
     } catch (\App\Exceptions\ErrorHandler $e) {
       return response()->json($e->getMessage(), $e->getCode());
     }
   }
 
-  public function createSale(array $data)
+  public function destroy($id)
   {
     try {
-    } catch (\App\Exceptions\ErrorHandler $e) {
-      return response()->json($e->getMessage(), $e->getCode());
-    }
-  }
+      $this->saleService->deleteSale($id);
 
-  public function updateSale($id, $data)
-  {
-    try {
-    } catch (\App\Exceptions\ErrorHandler $e) {
-      return response()->json($e->getMessage(), $e->getCode());
-    }
-  }
-
-  public function deleteSale($id)
-  {
-    try {
+      return $this->response('Sale deleted', HttpStatus::NO_CONTENT);
     } catch (\App\Exceptions\ErrorHandler $e) {
       return response()->json($e->getMessage(), $e->getCode());
     }
