@@ -78,11 +78,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
   }, [token])
 
   useEffect(() => {
-    console.log('Token:', token)
-
     const getProductsApi = async () => {
-      console.log('token:', token)
-
       try {
         const { data } = await api.get('/products')
 

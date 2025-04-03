@@ -1,7 +1,6 @@
 printf "\n> Instalando o back-end\n"
 cd ./backend
 mv .env.example .env
-composer install
 
 printf "\n> Instalando o front-end\n"
 cd ../frontend
@@ -10,6 +9,9 @@ yarn
 
 printf "\n> Rodando os containers\n"
 docker-compose up -d --wait
+
+printf "\n> instalando composer\n"
+docker exec mariah_api bash -c "composer install"
 
 printf "\n> Rodando as migrations e seeders dentro do container\n"
 docker exec mariah_api php artisan migrate:fresh --seed
