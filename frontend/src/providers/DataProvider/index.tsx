@@ -62,7 +62,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
       .required('Selecione pelo menos um produto'),
     paymentMethod: Yup.string().required('Selecione uma forma de pagamento'),
     quantity: Yup.number().optional(),
-    discont: Yup.number()
+    discount: Yup.number()
       .min(0)
       .max(10, 'O desconto máximo é de 10%')
       .optional(),
@@ -79,7 +79,7 @@ export const DataProvider = ({ children }: TProviderProps) => {
           : parseFloat(product.quantity),
     }))
     const request = {
-      discount: values.discont,
+      discount: values.discount,
       paymentInstallment:
         values.paymentInstallment === 'A VISTA'
           ? 'in_cash'
@@ -87,12 +87,17 @@ export const DataProvider = ({ children }: TProviderProps) => {
       paymentMethod: serializePaymentMethods(values.paymentMethod),
       products: productsSerialize,
     }
+
+    if (!values.paymentInstallment) {
+      delete request.paymentInstallment
+    }
+
     try {
       if (values.saleType === 'sale') {
         const { data } = await api.post('/sales', request)
         toast.success(
           `Venda no valor de ${formatedCurrency(
-            data.data.totalPrice
+            data.data.salesPrice
           )} finalizada com sucesso`
         )
       } else {
@@ -118,9 +123,9 @@ export const DataProvider = ({ children }: TProviderProps) => {
       search: '',
       products: [],
       paymentMethod: '',
-      paymentInstallment: '',
+      paymentInstallment: null,
       quantity: 0,
-      discont: 0,
+      discount: 0,
       saleType: 'sale',
     },
     validationSchema: schema,

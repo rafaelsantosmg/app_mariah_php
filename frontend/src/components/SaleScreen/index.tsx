@@ -43,6 +43,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
   } = form
   const [viewTable, setViewTable] = useState<boolean>(false)
   const [total, setTotal] = useState<number>(0)
+  const [totalProducts, setTotalProducts] = useState<number>(0)
 
   useEffect(() => {
     setFieldValue('saleType', 'sale')
@@ -68,6 +69,7 @@ export default function SaleScreen({ ...props }): JSX.Element {
     )
     const discont = (totalProducts * values.discount) / 100 || 0
 
+    setTotalProducts(totalProducts)
     setTotal(totalProducts - discont)
   }, [saleProducts, values.discount])
 
@@ -108,11 +110,11 @@ export default function SaleScreen({ ...props }): JSX.Element {
           {viewTable ? <ProductsTable /> : <SaleTable />}
         </Grid>
 
-        <Grid container justifyContent="space-between" sx={{ mt: 5 }}>
+        <Grid container justifyContent="space-between" sx={{ mt: 5, gap: 2 }}>
           <Grid item xs={3}>
             <TextFields
               label="Total"
-              value={formatedCurrency(total)}
+              value={formatedCurrency(totalProducts)}
               inputProps={{ readOnly: true, min: 0 }}
             />
           </Grid>
@@ -151,6 +153,14 @@ export default function SaleScreen({ ...props }): JSX.Element {
               onChange={handleChange}
               onClose={handleChange}
               disabled={values.paymentMethod !== 'Cartão de Crédito'}
+            />
+          </Grid>
+
+          <Grid item xs={3}>
+            <TextFields
+              label="Total a pagar"
+              value={formatedCurrency(total)}
+              inputProps={{ readOnly: true, min: 0 }}
             />
           </Grid>
         </Grid>
