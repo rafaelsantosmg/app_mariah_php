@@ -41,7 +41,6 @@ export default function ClosingCashier({ ...props }) {
       await api.post('/daily-movements', data)
       toast.success('Caixa fechado com sucesso!')
     } catch (error) {
-      console.log(error)
       toast.error('Erro ao fechar caixa!')
     } finally {
       router.push('/home')
