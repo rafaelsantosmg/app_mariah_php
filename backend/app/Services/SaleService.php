@@ -65,6 +65,27 @@ class SaleService
     });
   }
 
+  public function createSaleSpun(array $data)
+  {
+    return DB::transaction(function () use ($data) {
+      $products = $this->verifyProducts($data);
+
+      $totalPrice = $this->sumProducts($products);
+
+      $salesPrice = $this->applyDiscount($data, $totalPrice);
+
+      $sale = $this->saleRepository->create([
+        'discount' => $data['discount'] ?? 0,
+        'total_price' => round($totalPrice, 2),
+        'sales_price' => round($salesPrice, 2),
+      ]);
+
+      $this->updateStock($products);
+
+      return new SaleResource($sale);
+    });
+  }
+
   public function deleteSale($id)
   {
     $sale = $this->saleRepository->getById($id);
