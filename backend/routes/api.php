@@ -24,4 +24,6 @@ Route::get('/sales/{id}', [SaleController::class, 'show']);
 
 Route::post('/sales', [SaleController::class, 'store']);
 
+Route::post('/sales-spun', [SaleController::class, 'storeSpun']);
+
 Route::delete('/sales/{id}', [SaleController::class, 'destroy']);
