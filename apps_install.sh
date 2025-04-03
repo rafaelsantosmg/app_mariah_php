@@ -1,10 +1,10 @@
 printf "\n> Instalando o back-end\n"
 cd ./backend
-mv .env.example .env
+cp .env.example .env
 
 printf "\n> Instalando o front-end\n"
 cd ../frontend
-mv .env.example .env
+cp .env.example .env
 yarn
 
 printf "\n> Rodando os containers\n"
