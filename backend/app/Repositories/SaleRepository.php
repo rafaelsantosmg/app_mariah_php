@@ -30,10 +30,13 @@ class SaleRepository implements SaleInterface
   public function update(int $id, array $data)
   {
     $sale = Sale::find($id);
+
     if ($sale) {
       $sale->update($data);
+
       return $sale;
     }
+
     return null;
   }
 

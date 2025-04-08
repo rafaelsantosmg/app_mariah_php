@@ -17,6 +17,7 @@ class AuthController
         'token' => $request->user()->createToken('mariah')->plainTextToken,
       ]);
     }
+
     return $this->response('Not Authorized', HttpStatus::FORBIDDEN);
   }
 

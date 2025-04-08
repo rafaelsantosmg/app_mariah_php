@@ -19,6 +19,21 @@ class ProductController
     $this->productService = $productService;
   }
 
+  public function teste()
+  {
+    return response()->json([
+      'status' => 'success',
+      'code'   => HttpStatus::OK,
+      'data'   => [
+        'name'        => 'Product Name',
+        'description' => 'Product Description',
+        'price'       => 100.00,
+        'stock'       => 50,
+      ],
+      'message' => 'Hello, World!',
+    ]);
+  }
+
   public function index()
   {
     try {
@@ -45,11 +60,11 @@ class ProductController
   {
     try {
       $validator = Validator::make($request->all(), [
-        'code' => 'required|string|unique:products,code',
+        'code'      => 'required|string|unique:products,code',
         'costPrice' => 'required|numeric|min:0',
-        'name' => 'required|string',
+        'name'      => 'required|string',
         'salePrice' => 'required|numeric|min:0',
-        'stock' => 'required|integer|min:0',
+        'stock'     => 'required|integer|min:0',
         'stockType' => 'required|string',
       ]);
 
@@ -70,9 +85,9 @@ class ProductController
     try {
       $validator = Validator::make($request->all(), [
         'costPrice' => 'sometimes|numeric|min:0',
-        'name' => 'sometimes|string',
+        'name'      => 'sometimes|string',
         'salePrice' => 'sometimes|numeric|min:0',
-        'stock' => 'sometimes|integer|min:0',
+        'stock'     => 'sometimes|integer|min:0',
         'stockType' => 'sometimes|string',
       ]);
 

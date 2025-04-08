@@ -45,14 +45,14 @@ class SaleController
   {
     try {
       $validator = Validator::make($request->all(), [
-        'discount' => 'sometimes|numeric|min:0',
-        'paymentInstallment' => 'sometimes|string',
-        'paymentMethod' => 'sometimes|string|nullable',
-        'products' => 'required|array',
-        'products.*.productId' => 'required|integer|exists:products,id',
+        'discount'               => 'sometimes|numeric|min:0',
+        'paymentInstallment'     => 'sometimes|string',
+        'paymentMethod'          => 'sometimes|string|nullable',
+        'products'               => 'required|array',
+        'products.*.productId'   => 'required|integer|exists:products,id',
         'products.*.productCode' => 'required|string|exists:products,code',
-        'products.*.quantity' => 'required|integer|min:1',
-        'products.*.stockType' => 'required|string',
+        'products.*.quantity'    => 'required|integer|min:1',
+        'products.*.stockType'   => 'required|string',
       ]);
 
       if ($validator->fails()) {
@@ -71,11 +71,11 @@ class SaleController
   {
     try {
       $validator = Validator::make($request->all(), [
-        'products' => 'required|array',
-        'products.*.productId' => 'required|integer|exists:products,id',
+        'products'               => 'required|array',
+        'products.*.productId'   => 'required|integer|exists:products,id',
         'products.*.productCode' => 'required|string|exists:products,code',
-        'products.*.quantity' => 'required|integer|min:1',
-        'products.*.stockType' => 'required|string',
+        'products.*.quantity'    => 'required|integer|min:1',
+        'products.*.stockType'   => 'required|string',
       ]);
 
       if ($validator->fails()) {

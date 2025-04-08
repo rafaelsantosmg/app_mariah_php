@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Interfaces\ProductInterface;
 use App\Helpers\HttpStatus;
 use App\Http\Resources\ProductResource;
+use App\Interfaces\ProductInterface;
 
 class ProductService
 {
@@ -58,17 +58,17 @@ class ProductService
     }
 
     $newProduct = [
-      'code' => $data['code'],
-      'name' => $data['name'],
-      'description' => $data['description'] ?? null,
-      'cost_price' => $data['costPrice'],
-      'sale_price' => $data['salePrice'],
+      'code'          => $data['code'],
+      'name'          => $data['name'],
+      'description'   => $data['description'] ?? null,
+      'cost_price'    => $data['costPrice'],
+      'sale_price'    => $data['salePrice'],
       'profit_margin' => $this->calcProfitMargin($data),
-      'image' => $data['image'] ?? null,
-      'stock' => $data['stock'],
-      'stock_type' => $data['stockType'],
-      'created_at' => $data['createdAt'] ?? now(),
-      'updated_at' => $data['updatedAt'] ?? now(),
+      'image'         => $data['image'] ?? null,
+      'stock'         => $data['stock'],
+      'stock_type'    => $data['stockType'],
+      'created_at'    => $data['createdAt'] ?? now(),
+      'updated_at'    => $data['updatedAt'] ?? now(),
     ];
 
     $createProduct = $this->productRepository->create($newProduct);
@@ -89,15 +89,15 @@ class ProductService
     }
 
     $updateProduct = [
-      'name' => $data['name'],
-      'description' => $data['description'] ?? null,
-      'cost_price' => $data['costPrice'],
-      'sale_price' => $data['salePrice'],
+      'name'          => $data['name'],
+      'description'   => $data['description'] ?? null,
+      'cost_price'    => $data['costPrice'],
+      'sale_price'    => $data['salePrice'],
       'profit_margin' => $this->calcProfitMargin($data),
-      'image' => $data['image'] ?? null,
-      'stock' => $data['stock'],
-      'stock_type' => $data['stockType'],
-      'updated_at' => $data['updatedAt'] ?? now(),
+      'image'         => $data['image'] ?? null,
+      'stock'         => $data['stock'],
+      'stock_type'    => $data['stockType'],
+      'updated_at'    => $data['updatedAt'] ?? now(),
     ];
 
     $updatedProduct = $this->productRepository->update($id, $updateProduct);

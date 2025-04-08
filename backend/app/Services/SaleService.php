@@ -41,13 +41,13 @@ class SaleService
   {
     return DB::transaction(function () use ($data) {
       $products = $this->verifyProducts($data);
-      
+
       $totalPrice = $this->sumProducts($products);
 
       $salesPrice = $this->applyDiscount($data, $totalPrice);
 
       $sale = $this->saleRepository->create([
-        'discount' => $data['discount'] ?? 0,
+        'discount'    => $data['discount'] ?? 0,
         'total_price' => round($totalPrice, 2),
         'sales_price' => round($salesPrice, 2),
       ]);
@@ -72,7 +72,7 @@ class SaleService
       $salesPrice = $this->applyDiscount($data, $totalPrice);
 
       $sale = $this->saleRepository->create([
-        'discount' => $data['discount'] ?? 0,
+        'discount'    => $data['discount'] ?? 0,
         'total_price' => round($totalPrice, 2),
         'sales_price' => round($salesPrice, 2),
       ]);
@@ -106,6 +106,7 @@ class SaleService
       }
 
       $productStock = $productExist->stock - $product['quantity'];
+
       if ($productStock < 0) {
         throw new \App\Exceptions\ErrorHandler('Product not found', HttpStatus::BAD_REQUEST);
       }
@@ -115,7 +116,7 @@ class SaleService
           : $productExist->sale_price;
 
       return collect($productExist)->merge([
-        'quantity' => (int) $product['quantity'],
+        'quantity'   => (int) $product['quantity'],
         'sale_price' => $productPrice,
       ]);
     });
@@ -148,9 +149,9 @@ class SaleService
   {
     if (isset($data['paymentMethod'])) {
       Payment::create([
-        'payment_method' => $data['paymentMethod'],
+        'payment_method'      => $data['paymentMethod'],
         'payment_installment' => $data['paymentInstallment'] ?? null,
-        'sale_id' => $saleId,
+        'sale_id'             => $saleId,
       ]);
     }
   }
@@ -159,9 +160,9 @@ class SaleService
   {
     collect($products)->each(function ($product) use ($saleId) {
       SalesProduct::create([
-        'sale_id' => $saleId,
+        'sale_id'    => $saleId,
         'product_id' => $product['id'],
-        'quantity' => $product['quantity'],
+        'quantity'   => $product['quantity'],
       ]);
     });
   }

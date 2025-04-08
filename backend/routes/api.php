@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 // Login route
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/', [ProductController::class, 'teste']);
+
 // Authenticated routes with Sanctum middleware (token-based authentication)
 Route::middleware('auth:sanctum')->group(function () {
   // Logout route

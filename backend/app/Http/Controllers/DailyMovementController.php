@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\HttpStatus;
 use App\Services\DailyMovementService;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
